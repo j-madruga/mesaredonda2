@@ -180,10 +180,19 @@ class UserHandler {
                 localStorage.setItem('userData', JSON.stringify(userData))
                 location.replace('../index.html')
             } else {
-                alert('datos incorrectos, intente nuevamente')
+                Swal.fire(
+                    'Ups',
+                    'Datos incorrectos! Intente nuevamente.',
+                    'error',
+                )
             }
         } else {
-            alert('el usuario no se encuentra registrado')
+            Swal.fire({
+                title: 'Hola!',
+                html: 'El usuario no se encuentra registrado! Intente <a href="./signup.html">crear una cuenta</a>.',
+                icon: 'info'
+            }
+            )
         }
     }
     // method that sign's out a new user
