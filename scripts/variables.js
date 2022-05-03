@@ -1,7 +1,8 @@
 /* -------------------------------- variables ------------------------------- */
-const API_URL = 'http://127.0.0.1:5000/api/v1'
+const API_URL = './json/products.json'
 let relativeRoute // current relative path
 let productsArray // arr of products in localStorage
+let userData // user data on localStorage
 const currentLocation = window.location.pathname // stores current pathname
 /* ---------------------------------- nodes --------------------------------- */
 // index.html
@@ -92,6 +93,18 @@ const totalPriceDisplay = function (totalPrice) {
     return `<p class="total-cart">Total</p>
             <p class="total-price-cart">$${new Intl.NumberFormat("de-DE", {minimumFractionDigits: '2'}).format(totalPrice)}</p>`
 }
+// nav ul to be shown when user is NOT logged in
+const defaultNav = function () {
+    return `<li class="nav-item">
+            <a class="nav-link active fw-bold" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="./pages/login.html">Ingresar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="./pages/signup.html">Crear cuenta</a>
+            </li>`
+}
 // nav ul to be shown when user is logged in
 const personalizedNav = function (userName) {
     return `<li class="nav-item">
@@ -105,11 +118,11 @@ const personalizedNav = function (userName) {
             </li>`
 }
 /* ------------------ definition of relativeRoute variable ------------------ */
-if (currentLocation === '/frontend/index.html') {
+if (currentLocation === 'index.html') {
     relativeRoute = '.'
-} else if ((currentLocation === '/frontend/pages/purchase.html') ||
-    (currentLocation === 'frontend/pages/login.html') ||
-    (currentLocation === 'frontend/pages/signup.html')) {
+} else if ((currentLocation === 'pages/purchase.html') ||
+    (currentLocation === 'pages/login.html') ||
+    (currentLocation === 'pages/signup.html')) {
     relativeRoute = '..'
 } else {
     relativeRoute = '../..'
@@ -120,4 +133,11 @@ if (!localStorage.getItem('cart')) {
     localStorage.setItem('cart', JSON.stringify(productsArray))
 } else {
     productsArray = JSON.parse(localStorage.getItem('cart'))
+}
+/* ---------------------- user data from local storage ---------------------- */
+if (!localStorage.getItem('userData')) {
+    userData = {}
+    localStorage.setItem('userData', JSON.stringify(userData))
+} else {
+    userData = JSON.parse(localStorage.getItem('userData'))
 }

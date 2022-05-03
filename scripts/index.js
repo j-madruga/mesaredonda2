@@ -1,33 +1,24 @@
 window.addEventListener('load', () => {
-    /* ---------------------------------- token --------------------------------- */
-    const token = localStorage.getItem('token')
-    /* ------------- if token exists its because user has logged id ------------- */
-    if (token) {
-        async function printUser() {
-            const user = await userHandler.getUserData(token)
-            navUl.innerHTML = personalizedNav(user.user.name)
+    /* -------------------------------- userData -------------------------------- */
+    userData = userHandler.getUserData();
+    /* ------------ checks if there is a user and if it is logged in ------------ */
+    if (Object.keys(userData).length && userData.isLoggedIn) {
+        (() => {
+            navUl.innerHTML = personalizedNav(userData.name)
             const closeSession = document.getElementById('closeSession')
             closeSession.addEventListener('click', () => userHandler.signOut())
-        }
-        printUser()
+        })()
     }
     /* -------------------------------- listeners ------------------------------- */
     navCart.addEventListener('click', () => cart.showCart(relativeRoute, cartProductList, cartTotal))
     /* -------------------------------- functions ------------------------------- */
     // function that gets all the products
     function getAllProducts() {
-        const endpoint = `${API_URL}/products`
-        const settings = {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }
-        return new Promise((resolve, reject) => {
-            fetch(endpoint, settings)
-                .then((response) => resolve(response.json()))
-                .catch((msjErr) => reject(`error obteniendo las tareas (${msjErr})`))
-        })
+        const endpoint = API_URL;
+        const response = fetch(endpoint)
+            .then(response => response.json())
+            .then(data => data)
+        return response;
     }
 
     // function that filters products on sale

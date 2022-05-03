@@ -1,15 +1,14 @@
 window.addEventListener('load', () => {
-    /* ---------------------------------- token --------------------------------- */
-    const token = localStorage.getItem('token')
-    if(token) {
-        async function printUser() {
-            const user = await userHandler.getUserData(token)
-            navUl.innerHTML = personalizedNav(user.user.name)
+    /* -------------------------------- userData -------------------------------- */
+    userData = userHandler.getUserData();
+    /* ------------ checks if there is a user and if it is logged in ------------ */
+    if (Object.keys(userData).length && userData.isLoggedIn) {
+        (() => {
+            navUl.innerHTML = personalizedNav(userData.name)
             cartNavDiv[0].remove() // remove cart from nav in purchase.html
             const closeSession = document.getElementById('closeSession')
             closeSession.addEventListener('click', () => userHandler.signOut())
-        }
-        printUser()
+        })()
     }
     /* -------------------------- check if cart exists -------------------------- */
     if (productsArray.length === 0) {
@@ -46,39 +45,16 @@ window.addEventListener('load', () => {
             confirmButtonText: 'Comprar'
         }).then((result) => {
             if (result.isConfirmed) {
-                if(token) {
-                    userHandler.addPurchase(token)
-                    .then(
-                        Swal.fire(
-                            'Compra confirmada',
-                            'Le enviaremos un mail con los detalles de su compra',
-                            'success',
-                        ).then((result) => {
-                            if (result.isConfirmed) {
-                                localStorage.setItem('cart', '[]')
-                                location.replace('../index.html')
-                            }
-                        })
-                    )
-                    .catch((error) => {
-                        Swal.fire(
-                            'Ha ocurrido un error :(',
-                            `${error}`,
-                            'error'
-                        )
-                    })
-                } else {
-                    Swal.fire(
-                        'Compra confirmada',
-                        'Le enviaremos un mail con los detalles de su compra',
-                        'success',
-                    ).then((result)=> {
-                        if (result.isConfirmed) {
-                            localStorage.setItem('cart', '[]')
-                            location.replace('../index.html')
-                        }
-                    })
-                }
+                Swal.fire(
+                    'Compra confirmada',
+                    'Le enviaremos un mail con los detalles de su compra',
+                    'success',
+                ).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.setItem('cart', '[]')
+                        location.replace('../index.html')
+                    }
+                })
             }
         })
     }

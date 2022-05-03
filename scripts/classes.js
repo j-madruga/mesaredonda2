@@ -148,100 +148,52 @@ class UserHandler {
     // constructor
     constructor(){}
     // method that signs up a new user
-    getUserData = (token) => {
-        const endpoint = `${API_URL}/getuser`
-        const settings = {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                "token": token
-            }
-        }
-        return new Promise((resolve, reject) => {
-            fetch(endpoint, settings)
-            .then((response) => resolve(response.json()))
-            .catch((msjErr) => reject(console.log(msjErr)))
-        })
+    getUserData = () => {
+        return JSON.parse(localStorage.getItem('userData'))
     }
     // method that asigns up a new user
     signUp = (e) => {
         e.preventDefault()
         const passwordRepeats = validator.passwordRepeats(signuForm, signupPassword, signupPasswordConfirm)
         const emptyFields = validator.checkEmptyFields(signupName, signupEmail, signupPassword, signupPasswordConfirm)
-        const endpoint = `${API_URL}/signup`
         const userData = {
             name: signupName.value.toLowerCase().trim(),
             email: signupEmail.value.toLowerCase().trim(),
-            password: signupPassword.value.toLowerCase().trim()
-        }
-        const settings = {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
+            password: signupPassword.value.toLowerCase().trim(),
+            isLoggedIn: true
         }
         if (!passwordRepeats && !emptyFields) {
-            fetch(endpoint, settings)
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data.token)
-                const token = data.token
-                localStorage.setItem('token', token)
-                location.replace('../index.html')
-            })
-            .catch((err) => console.log(err))
+            localStorage.setItem('userData', JSON.stringify(userData)) // in a real enviroment the password would not be stored in localStorage
+            location.replace('../index.html')
         }
     }
     // method that loggs in a new user
     logIn = (e) => {
         e.preventDefault()
-        const endpoint = `${API_URL}/login`
-        const userData = {
+        const userInfo = {
             email: loginEmail.value.toLowerCase().trim(),
             password: loginPassword.value.toLowerCase().trim()
         }
-        const settings = {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
+        if (Object.keys(userData).length) {
+            if (this.getUserData() && userInfo.email === userData.email && userInfo.password === userData.password) {
+                userData.isLoggedIn = true
+                localStorage.setItem('userData', JSON.stringify(userData))
+                location.replace('../index.html')
+            } else {
+                alert('datos incorrectos, intente nuevamente')
+            }
+        } else {
+            alert('el usuario no se encuentra registrado')
         }
-        fetch(endpoint, settings)
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data)
-            const token = data.token
-            localStorage.setItem('token', token)
-            location.replace('../index.html')
-        })
-        .catch((err) => console.log(err))
     }
     // method that sign's out a new user
     signOut = () => {
-        localStorage.removeItem('token')
+        userData.isLoggedIn = false
+        localStorage.setItem('userData', JSON.stringify(userData))
+        navUl.innerHTML = defaultNav()
+        console.log(userData)
+        // localStorage.removeItem('userData')
         location.replace(`${relativeRoute}/index.html`)
-    }
-    // method that add's purchase to user
-    addPurchase = (token) => {
-        const purchaseProducts = localStorage.getItem('cart')
-        const purchaseDate = new Date()
-        const stringifyDate = JSON.stringify(purchaseDate)
-        const endpoint = `${API_URL}/purchases`
-        const settings = {
-            method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-                "token": token
-            },
-            body: `{"products": ${purchaseProducts}, "date": ${stringifyDate}}`
-        }
-        return new Promise((resolve, reject) => {
-            fetch(endpoint, settings)
-            .then((response) => resolve(response.json()))
-            .catch((err)=> reject(err))
-        })        
     }
 }
 
