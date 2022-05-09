@@ -118,11 +118,11 @@ const personalizedNav = function (userName) {
             </li>`
 }
 /* ------------------ definition of relativeRoute variable ------------------ */
-if (currentLocation === 'https://j-madruga.github.io/mesaredonda2/') {
+if (currentLocation === '/mesaredonda2/') {
     relativeRoute = '.'
-} else if ((currentLocation === 'https://j-madruga.github.io/mesaredonda2/pages/purchase.html') ||
-    (currentLocation === 'https://j-madruga.github.io/mesaredonda2/pages/login.html') ||
-    (currentLocation === 'https://j-madruga.github.io/mesaredonda2/pages/signup.html')) {
+} else if ((currentLocation === '/mesaredonda2/pages/purchase.html') ||
+    (currentLocation === '/mesaredonda2/pages/login.html') ||
+    (currentLocation === '/mesaredonda2/pages/signup.html')) {
     relativeRoute = '..'
 } else {
     relativeRoute = '../..'
