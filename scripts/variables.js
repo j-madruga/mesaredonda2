@@ -118,7 +118,7 @@ const personalizedNav = function (userName) {
             </li>`
 }
 /* ------------------ definition of relativeRoute variable ------------------ */
-if (currentLocation === '/mesaredonda2/') {
+if (currentLocation === '/mesaredonda2/' || currentLocation === '/mesaredonda2/index.html') {
     relativeRoute = '.'
 } else if ((currentLocation === '/mesaredonda2/pages/purchase.html') ||
     (currentLocation === '/mesaredonda2/pages/login.html') ||
